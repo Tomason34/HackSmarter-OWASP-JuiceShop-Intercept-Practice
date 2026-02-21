@@ -1,0 +1,162 @@
+🛡️ HackSmarter – OWASP Juice Shop Interception Lab
+Executive Summary
+
+This repository documents my hands-on practice using OWASP Juice Shop in a controlled HackSmarter lab environment.
+
+The focus of this session was not aggressive exploitation, but building a stable and repeatable testing architecture while validating:
+
+VPN connectivity
+
+Target reachability
+
+Proxy configuration
+
+Burp Suite setup
+
+Java runtime compatibility
+
+Firewall interaction with interception tools
+
+This lab reinforced that environment stability is foundational to effective web application pentesting.
+
+Lab Objective
+
+Practice the core web application testing workflow:
+
+Connect to lab network via VPN
+
+Verify target reachability
+
+Configure Burp Suite proxy
+
+Intercept HTTP traffic
+
+Analyze request/response behavior
+
+Target: OWASP Juice Shop
+Tools: Kali Linux (WSL), OpenVPN, Burp Suite Community Edition
+
+VPN Connection Validation
+
+Start OpenVPN:
+
+sudo openvpn foundations_of_web_a.ovpn
+
+Successful connection output:
+
+TUN/TAP device tun0 opened
+net_addr_v4_add: 10.200.36.146/16 dev tun0
+Initialization Sequence Completed
+
+Interpretation:
+
+Tunnel interface created
+
+IP assigned
+
+Routing active
+
+Target Reachability Testing
+ICMP Verification
+ping 10.1.139.16
+
+Example response:
+
+64 bytes from 10.1.139.16: icmp_seq=1 ttl=62 time=21.3 ms
+
+Confirmed:
+
+Target reachable through VPN
+
+HTTP Service Check
+curl -I http://10.1.139.16
+
+Example response:
+
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+X-Frame-Options: SAMEORIGIN
+
+Confirmed:
+
+Web application running
+
+Security headers present
+
+Java & Burp Compatibility Issue
+
+Initial attempt using OpenJDK 11:
+
+java.lang.UnsupportedClassVersionError:
+class file version 65.0
+
+Interpretation:
+
+Burp build compiled for newer Java runtime
+
+OpenJDK 11 incompatible
+
+Switched to Java 21:
+
+sudo update-alternatives --config java
+java -version
+
+Confirmed:
+
+openjdk version "21.0.9"
+
+Lesson:
+Toolchain compatibility must be validated before troubleshooting application behavior.
+
+Proxy & Firewall Configuration
+
+Final stable setup:
+
+Burp Suite running on Windows
+
+Proxy listener: 127.0.0.1:8080
+
+Windows Firewall explicitly allowing:
+C:\Program Files\BurpSuiteCommunity\BurpSuiteCommunity.exe
+
+Browser traffic routed through local proxy
+
+This separation (WSL for VPN, Windows for Burp GUI) resolved GUI instability and routing conflicts.
+
+Key Lessons Learned
+
+Environment misconfiguration can mimic application failure
+
+VPN routing must be validated before proxy debugging
+
+Java runtime version impacts security tooling
+
+Local interception tools require proper firewall permissions
+
+Stable architecture reduces troubleshooting fatigue
+
+Not every lab session produces flags.
+Some produce foundational engineering clarity.
+
+Completion
+
+Successfully completed the HackSmarter OWASP Juice Shop lab module and received certification.
+
+Next Steps
+
+Intercept login request
+
+Send to Repeater
+
+Modify JSON parameters
+
+Observe status codes, response size, and timing differences
+
+Document findings in structured vulnerability format
+
+Ethical Notice
+
+All testing performed within a controlled educational lab environment.
+
+Tomasz
+Learning in public. Building methodically.
